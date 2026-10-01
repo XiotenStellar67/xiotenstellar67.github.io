@@ -1,1272 +1,885 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>晓天的扩列卡片</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --bg-primary: #0d0b08;
-            --bg-secondary: #1a150e;
-            --bg-card: rgba(35, 28, 10, 0.72);
-            --bg-card-hover: rgba(50, 40, 15, 0.88);
-            --text-primary: #f5f2ea;
-            --text-secondary: #c8b898;
-            --text-muted: #8a7a5c;
-            --border-color: rgba(255, 200, 0, 0.12);
-            --border-hover: rgba(255, 200, 0, 0.35);
-            --accent-gold: #FFB800;
-            --accent-amber: #FFD700;
-            --accent-deep: #E6A800;
-            --glow-gold: rgba(255, 184, 0, 0.35);
-            --radius-card: 20px;
-            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --color-qq: #12B7F5;
-            --color-bilibili: #FB7299;
-            --color-x: #e7e9ea;
-            --color-github: #f0f6fc;
-            --color-discord: #5865F2;
-            --color-cybox: #FFB800;
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>晓天的扩列卡片</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+<style>
+:root {
+    --bg-primary: #0d0b08;
+    --bg-card: rgba(35, 28, 10, 0.72);
+    --bg-card-hover: rgba(50, 40, 15, 0.88);
+    --text-primary: #f5f2ea;
+    --text-secondary: #c8b898;
+    --text-muted: #8a7a5c;
+    --border-color: rgba(255, 200, 0, 0.12);
+    --border-hover: rgba(255, 200, 0, 0.35);
+    --accent-gold: #FFB800;
+    --accent-amber: #FFD700;
+    --accent-deep: #E6A800;
+    --glow-gold: rgba(255, 184, 0, 0.35);
+    --radius-card: 20px;
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --color-qq: #12B7F5;
+    --color-bilibili: #FB7299;
+    --color-x: #e7e9ea;
+    --color-github: #f0f6fc;
+    --color-discord: #5865F2;
+    --color-cybox: #FFB800;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    user-select: none;
+    -webkit-user-select: none;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* ============ 背景 ============ */
+.bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+    animation: orbFloat 18s ease-in-out infinite;
+}
+.orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,180,0,0.5), transparent 70%); top: -150px; left: -100px; }
+.orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(230,168,0,0.4), transparent 70%); bottom: -100px; right: -80px; animation-delay: -6s; }
+.orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(255,215,0,0.3), transparent 70%); top: 40%; left: 55%; animation-delay: -12s; }
+.orb-4 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,200,0,0.3), transparent 70%); top: 10%; right: 20%; animation-delay: -9s; }
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    25% { transform: translate(30px,-40px) scale(1.1); }
+    50% { transform: translate(-20px,30px) scale(0.95); }
+    75% { transform: translate(15px,-20px) scale(1.05); }
+}
+#particle-canvas {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 1; pointer-events: none; opacity: 0.75;
+}
+.grid-overlay {
+    position: fixed; inset: 0;
+    z-index: 1; pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255,200,0,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,200,0,0.015) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
 
-        html {
-            scroll-behavior: smooth;
-            -webkit-tap-highlight-color: transparent;
-        }
+/* ============ 主容器 ============ */
+.main-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 780px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 30px 20px;
+}
 
-        body {
-            font-family: var(--font-sans);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 20px;
-            cursor: default;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+/* ============ 头像区 ============ */
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    text-align: center;
+    animation: fadeInDown 1s var(--ease-smooth) 2s both;
+}
+.avatar-wrapper {
+    position: relative;
+    width: 110px; height: 110px;
+    cursor: pointer;
+    transition: transform 0.4s var(--ease-bounce);
+    z-index: 5;
+}
+.avatar-wrapper:hover { transform: scale(1.08); }
+.avatar-ring {
+    position: absolute; inset: -6px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--accent-gold), var(--accent-deep), #3a2a00, var(--accent-amber), var(--accent-gold));
+    animation: ringSpin 6s linear infinite;
+    opacity: 0.9;
+    filter: blur(1px);
+}
+.avatar-ring::after {
+    content: '';
+    position: absolute; inset: 3px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+}
+@keyframes ringSpin { to { transform: rotate(360deg); } }
+.avatar-img {
+    position: relative;
+    z-index: 2;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2a1f0a, #0d0b08);
+    border: 3px solid rgba(255,200,0,0.25);
+    font-size: 44px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(255,184,0,0.25), 0 0 60px rgba(255,184,0,0.08), inset 0 0 20px rgba(255,200,0,0.05);
+    transition: box-shadow 0.5s ease;
+}
+.avatar-wrapper:hover .avatar-img {
+    box-shadow: 0 0 40px rgba(255,184,0,0.45), 0 0 80px rgba(255,184,0,0.18), inset 0 0 25px rgba(255,200,0,0.08);
+}
+.avatar-photo { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+.avatar-pulse {
+    position: absolute; inset: -15px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,200,0,0.4);
+    animation: pulseRing 2.5s ease-out infinite;
+    pointer-events: none;
+}
+@keyframes pulseRing {
+    0% { transform: scale(0.85); opacity: 1; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+.profile-name {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 0%, #ffe8b0 25%, #FFD700 50%, #FFB800 75%, #ffecb3 100%);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease-in-out infinite;
+    margin-top: 6px;
+    margin-bottom: -8px;
+}
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+.profile-name-sub {
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ffe8b0, #FFD700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.profile-bio {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+    max-width: 400px;
+    margin-top: -8px;
+    opacity: 0.85;
+}
+.profile-bio .cursor {
+    display: inline-block;
+    width: 2px; height: 1.1em;
+    background: var(--accent-gold);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 16px;
+    border-radius: 50px;
+    background: rgba(255,200,0,0.06);
+    border: 1px solid rgba(255,200,0,0.15);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    animation: fadeInDown 1s var(--ease-smooth) 2.3s both;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    animation: statusPulse 2s ease-in-out infinite;
+}
+@keyframes statusPulse {
+    0%, 100% { box-shadow: 0 0 4px var(--glow-gold); transform: scale(1); }
+    50% { box-shadow: 0 0 16px var(--glow-gold); transform: scale(1.2); }
+}
 
-        /* ========== 背景光斑 ========== */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.35;
-            animation: orbFloat 18s ease-in-out infinite;
-        }
-        .bg-orb.orb-1 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(255, 180, 0, 0.5), transparent 70%);
-            top: -150px;
-            left: -100px;
-            animation-delay: 0s;
-        }
-        .bg-orb.orb-2 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(230, 168, 0, 0.4), transparent 70%);
-            bottom: -100px;
-            right: -80px;
-            animation-delay: -6s;
-        }
-        .bg-orb.orb-3 {
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.3), transparent 70%);
-            top: 40%;
-            left: 55%;
-            animation-delay: -12s;
-        }
-        .bg-orb.orb-4 {
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 200, 0, 0.3), transparent 70%);
-            top: 10%;
-            right: 20%;
-            animation-delay: -9s;
-        }
+/* ============ 卡片网格 ============ */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    perspective: 1200px;
+    animation: fadeInUp 1s var(--ease-smooth) 2.5s both;
+}
+@media (max-width: 650px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
+@media (max-width: 380px) {
+    .cards-grid { gap: 10px; }
+}
+.social-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 28px 18px 22px;
+    border-radius: var(--radius-card);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: transform 0.45s var(--ease-smooth), border-color 0.45s ease, background 0.45s ease, box-shadow 0.5s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+    cursor: pointer;
+    overflow: hidden;
+    opacity: 0;
+    animation: cardEntrance 0.8s var(--ease-bounce) forwards;
+}
+.social-card:nth-child(1) { animation-delay: 2.7s; }
+.social-card:nth-child(2) { animation-delay: 2.8s; }
+.social-card:nth-child(3) { animation-delay: 2.9s; }
+.social-card:nth-child(4) { animation-delay: 3.0s; }
+.social-card:nth-child(5) { animation-delay: 3.1s; }
+.social-card:nth-child(6) { animation-delay: 3.2s; }
+@keyframes cardEntrance {
+    0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.social-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: var(--radius-card);
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,200,0,0.06), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+.social-card:hover::before { opacity: 1; }
+.social-card::after {
+    content: '';
+    position: absolute; inset: -2px;
+    border-radius: calc(var(--radius-card) + 2px);
+    background: conic-gradient(from var(--angle, 0deg), transparent 0%, var(--accent-gold) 15%, transparent 30%, transparent 50%, var(--accent-deep) 65%, transparent 80%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: -1;
+    animation: borderRotate 4s linear infinite;
+    pointer-events: none;
+}
+.social-card:hover::after { opacity: 0.7; }
+@keyframes borderRotate { to { --angle: 360deg; } }
+.social-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 40px var(--glow-gold), 0 0 80px rgba(255,184,0,0.08);
+    z-index: 5;
+}
+.social-card:active {
+    transform: translateY(-2px) scale(0.97);
+    transition-duration: 0.15s;
+}
+.card-icon-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 58px; height: 58px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    transition: transform 0.5s var(--ease-bounce), box-shadow 0.5s ease;
+    background: rgba(255,200,0,0.04);
+    border: 1px solid rgba(255,200,0,0.12);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.social-card:hover .card-icon-wrapper {
+    transform: scale(1.15) rotate(-5deg);
+    box-shadow: 0 8px 30px var(--glow-gold);
+}
+.social-card:hover .card-icon-wrapper i { transform: scale(1.1); }
+.card-icon-wrapper i { transition: transform 0.5s var(--ease-bounce); }
+.card-qq .card-icon-wrapper i { color: var(--color-qq); }
+.card-bilibili .card-icon-wrapper i { color: var(--color-bilibili); }
+.card-x .card-icon-wrapper i { color: var(--color-x); }
+.card-github .card-icon-wrapper i { color: var(--color-github); }
+.card-discord .card-icon-wrapper i { color: var(--color-discord); }
+.card-cybox .card-icon-wrapper i { color: var(--color-cybox); }
+.card-label {
+    position: relative;
+    z-index: 2;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-align: center;
+}
+.card-username {
+    position: relative;
+    z-index: 2;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+    text-align: center;
+    word-break: break-all;
+}
+.social-card:hover .card-username { color: var(--text-secondary); }
+.card-arrow {
+    position: absolute;
+    z-index: 2;
+    top: 14px; right: 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    opacity: 0;
+    transform: translate(-5px, 5px);
+    transition: all 0.4s var(--ease-smooth);
+}
+.social-card:hover .card-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+    color: var(--accent-gold);
+}
+.card-tooltip {
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    background: rgba(20,15,5,0.92);
+    font-size: 0.7rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.35s var(--ease-smooth);
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    z-index: 20;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,200,0,0.2);
+}
+.social-card:hover .card-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    bottom: -38px;
+}
+@media (max-width: 650px) {
+    .social-card { padding: 20px 10px 16px; gap: 10px; }
+    .card-icon-wrapper { width: 48px; height: 48px; font-size: 24px; }
+    .card-label { font-size: 0.85rem; }
+    .card-username { font-size: 0.62rem; }
+}
 
-        @keyframes orbFloat {
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-            25% {
-                transform: translate(30px, -40px) scale(1.1);
-            }
-            50% {
-                transform: translate(-20px, 30px) scale(0.95);
-            }
-            75% {
-                transform: translate(15px, -20px) scale(1.05);
-            }
-        }
+/* ============ 页脚 ============ */
+.footer {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    animation: fadeInUp 1.2s var(--ease-smooth) 3.4s both;
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    opacity: 0.7;
+    line-height: 1.9;
+}
+.footer a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease; }
+.footer a:hover { color: var(--accent-gold); }
 
-        /* ========== 粒子画布 ========== */
-        #particle-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0.75;
-        }
+@keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
 
-        /* ========== 网格叠加层 ========== */
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            background-image:
-                linear-gradient(rgba(255, 200, 0, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 200, 0, 0.015) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
+/* ============ 涟漪 ============ */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,200,0,0.3);
+    transform: scale(0);
+    animation: rippleAnim 0.7s ease-out forwards;
+    pointer-events: none;
+    z-index: 10;
+}
+@keyframes rippleAnim { to { transform: scale(5); opacity: 0; } }
 
-        /* ========== 主容器 ========== */
-        .main-container {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: 780px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            padding: 30px 20px;
-        }
+/* ============ 开场动画 ============ */
+#intro-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg-primary);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    will-change: opacity, visibility;
+}
+#intro-overlay.hidden { opacity: 0; visibility: hidden; }
+.intro-image {
+    width: 180px; height: 180px;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 0 50px var(--glow-gold), 0 0 120px rgba(255,184,0,0.15);
+    will-change: transform, opacity;
+    position: relative;
+    opacity: 0;
+}
+.intro-image.play {
+    animation: introFadeOut 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes introFadeOut {
+    0% { transform: perspective(800px) rotateY(0deg) scale(0.3); opacity: 0; }
+    15% { transform: perspective(800px) rotateY(180deg) scale(1.05); opacity: 1; }
+    40% { transform: perspective(800px) rotateY(360deg) scale(1.1); opacity: 1; }
+    65% { transform: perspective(800px) rotateY(360deg) scale(0.9); opacity: 0.85; }
+    100% { transform: perspective(800px) rotateY(360deg) scale(0.2); opacity: 0; }
+}
 
-        /* ========== 头像区域 ========== */
-        .profile-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 18px;
-            text-align: center;
-            animation: fadeInDown 1s var(--transition-smooth) both;
-            animation-delay: 2.0s;
-        }
-
-        .avatar-wrapper {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            cursor: pointer;
-            transition: transform 0.4s var(--transition-bounce);
-            z-index: 5;
-        }
-        .avatar-wrapper:hover {
-            transform: scale(1.08);
-        }
-
-        .avatar-ring {
-            position: absolute;
-            inset: -6px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg,
-                    var(--accent-gold),
-                    var(--accent-deep),
-                    #3a2a00,
-                    var(--accent-amber),
-                    var(--accent-gold));
-            animation: ringSpin 6s linear infinite;
-            opacity: 0.9;
-            filter: blur(1px);
-        }
-        @keyframes ringSpin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .avatar-ring::after {
-            content: '';
-            position: absolute;
-            inset: 3px;
-            border-radius: 50%;
-            background: var(--bg-primary);
-        }
-
-        .avatar-img {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #2a1f0a, #0d0b08);
-            border: 3px solid rgba(255, 200, 0, 0.25);
-            font-size: 44px;
-            color: var(--text-primary);
-            overflow: hidden;
-            box-shadow:
-                0 0 30px rgba(255, 184, 0, 0.25),
-                0 0 60px rgba(255, 184, 0, 0.08),
-                inset 0 0 20px rgba(255, 200, 0, 0.05);
-            transition: box-shadow 0.5s ease;
-        }
-        .avatar-wrapper:hover .avatar-img {
-            box-shadow:
-                0 0 40px rgba(255, 184, 0, 0.45),
-                0 0 80px rgba(255, 184, 0, 0.18),
-                inset 0 0 25px rgba(255, 200, 0, 0.08);
-        }
-
-        .avatar-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            display: block;
-        }
-
-        .avatar-pulse {
-            position: absolute;
-            inset: -15px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 200, 0, 0.4);
-            animation: pulseRing 2.5s ease-out infinite;
-            pointer-events: none;
-        }
-        @keyframes pulseRing {
-            0% {
-                transform: scale(0.85);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.3);
-                opacity: 0;
-            }
-        }
-
-        .profile-name {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #ffe8b0 25%, #FFD700 50%, #FFB800 75%, #ffecb3 100%);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 5s ease-in-out infinite;
-            margin-top: 6px;
-	    margin-bottom: -8px;
-        }
-        @keyframes gradientShift {
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
-        .profile-bio {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-            letter-spacing: 0.3px;
-            max-width: 400px;
-            margin-top: -8px;
-            opacity: 0.85;
-        }
-        .profile-bio .cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1.1em;
-            background: var(--accent-gold);
-            margin-left: 2px;
-            vertical-align: text-bottom;
-            animation: blink 1s step-end infinite;
-        }
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0;
-            }
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 6px 16px;
-            border-radius: 50px;
-            background: rgba(255, 200, 0, 0.06);
-            border: 1px solid rgba(255, 200, 0, 0.15);
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.5px;
-            animation: fadeInDown 1s var(--transition-smooth) 2.3s both;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-gold);
-            animation: statusPulse 2s ease-in-out infinite;
-            box-shadow: 0 0 8px var(--glow-gold);
-        }
-        @keyframes statusPulse {
-            0%,
-            100% {
-                box-shadow: 0 0 4px var(--glow-gold);
-                transform: scale(1);
-            }
-            50% {
-                box-shadow: 0 0 16px var(--glow-gold);
-                transform: scale(1.2);
-            }
-        }
-
-        /* ========== 卡片网格 ========== */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            width: 100%;
-            perspective: 1200px;
-            animation: fadeInUp 1s var(--transition-smooth) 2.5s both;
-        }
-        @media (max-width: 650px) {
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 14px;
-            }
-        }
-        @media (max-width: 380px) {
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 14px;
-            }
-        }
-
-        .social-card {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            padding: 28px 18px 22px;
-            border-radius: var(--radius-card);
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            text-decoration: none;
-            color: var(--text-primary);
-            transition:
-                transform 0.45s var(--transition-smooth),
-                border-color 0.45s ease,
-                background 0.45s ease,
-                box-shadow 0.5s ease;
-            transform-style: preserve-3d;
-            will-change: transform;
-            cursor: pointer;
-            overflow: hidden;
-            opacity: 0;
-            animation: cardEntrance 0.8s var(--transition-bounce) forwards;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .social-card:nth-child(1) {
-            animation-delay: 2.7s;
-        }
-        .social-card:nth-child(2) {
-            animation-delay: 2.8s;
-        }
-        .social-card:nth-child(3) {
-            animation-delay: 2.9s;
-        }
-        .social-card:nth-child(4) {
-            animation-delay: 3.0s;
-        }
-        .social-card:nth-child(5) {
-            animation-delay: 3.1s;
-        }
-        .social-card:nth-child(6) {
-            animation-delay: 3.2s;
-        }
-
-        @keyframes cardEntrance {
-            0% {
-                opacity: 0;
-                transform: translateY(40px) scale(0.9);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .social-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: var(--radius-card);
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                    rgba(255, 200, 0, 0.06), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .social-card:hover::before {
-            opacity: 1;
-        }
-
-        .social-card::after {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: calc(var(--radius-card) + 2px);
-            background: conic-gradient(from var(--angle, 0deg),
-                    transparent 0%, var(--accent-gold) 15%,
-                    transparent 30%, transparent 50%,
-                    var(--accent-deep) 65%,
-                    transparent 80%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: -1;
-            animation: borderRotate 4s linear infinite;
-            pointer-events: none;
-        }
-        .social-card:hover::after {
-            opacity: 0.7;
-        }
-        @keyframes borderRotate {
-            0% {
-                --angle: 0deg;
-            }
-            100% {
-                --angle: 360deg;
-            }
-        }
-
-        .social-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-hover);
-            transform: translateY(-8px) scale(1.03);
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, 0.5),
-                0 0 40px var(--glow-gold),
-                0 0 80px rgba(255, 184, 0, 0.08);
-            z-index: 5;
-        }
-
-        .social-card:active {
-            transform: translateY(-2px) scale(0.97);
-            transition-duration: 0.15s;
-        }
-
-        .card-icon-wrapper {
-            position: relative;
-            z-index: 2;
-            width: 58px;
-            height: 58px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            transition: transform 0.5s var(--transition-bounce), box-shadow 0.5s ease;
-            background: rgba(255, 200, 0, 0.04);
-            border: 1px solid rgba(255, 200, 0, 0.12);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-        .social-card:hover .card-icon-wrapper {
-            transform: scale(1.15) rotate(-5deg);
-            box-shadow: 0 8px 30px var(--glow-gold);
-        }
-
-        .card-icon-wrapper i {
-            transition: transform 0.5s var(--transition-bounce);
-        }
-        .social-card:hover .card-icon-wrapper i {
-            transform: scale(1.1);
-        }
-
-        .card-qq .card-icon-wrapper i {
-            color: var(--color-qq);
-        }
-        .card-bilibili .card-icon-wrapper i {
-            color: var(--color-bilibili);
-        }
-        .card-x .card-icon-wrapper i {
-            color: var(--color-x);
-        }
-        .card-github .card-icon-wrapper i {
-            color: var(--color-github);
-        }
-        .card-discord .card-icon-wrapper i {
-            color: var(--color-discord);
-        }
-        .card-cybox .card-icon-wrapper i {
-            color: var(--color-cybox);
-        }
-
-        .card-label {
-            position: relative;
-            z-index: 2;
-            font-size: 0.95rem;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            color: var(--text-primary);
-            transition: color 0.3s ease;
-            text-align: center;
-        }
-        .card-username {
-            position: relative;
-            z-index: 2;
-            font-size: 0.72rem;
-            font-weight: 400;
-            font-family: var(--font-mono);
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            transition: color 0.3s ease;
-            text-align: center;
-            word-break: break-all;
-        }
-        .social-card:hover .card-username {
-            color: var(--text-secondary);
-        }
-
-        .card-arrow {
-            position: absolute;
-            z-index: 2;
-            top: 14px;
-            right: 14px;
-            font-size: 12px;
-            color: var(--text-muted);
-            opacity: 0;
-            transform: translate(-5px, 5px);
-            transition: all 0.4s var(--transition-smooth);
-        }
-        .social-card:hover .card-arrow {
-            opacity: 1;
-            transform: translate(0, 0);
-            color: var(--accent-gold);
-        }
-
-        /* ========== 底部信息 ========== */
-        .footer {
-            text-align: center;
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            animation: fadeInUp 1.2s var(--transition-smooth) 3.4s both;
-            margin-top: 10px;
-            font-family: var(--font-mono);
-            opacity: 0.7;
-        }
-        .footer a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        .footer a:hover {
-            color: var(--accent-gold);
-        }
-
-        @keyframes fadeInDown {
-            0% {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ========== 点击涟漪效果 ========== */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 200, 0, 0.3);
-            transform: scale(0);
-            animation: rippleAnim 0.7s ease-out forwards;
-            pointer-events: none;
-            z-index: 10;
-        }
-        @keyframes rippleAnim {
-            to {
-                transform: scale(5);
-                opacity: 0;
-            }
-        }
-
-        /* ========== 开场动画覆盖层 ========== */
-        #intro-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-primary);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-            will-change: opacity, visibility;
-        }
-        #intro-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-        .intro-image {
-            width: 180px;
-            height: 180px;
-            border-radius: 16px;
-            object-fit: cover;
-            box-shadow:
-                0 0 50px var(--glow-gold),
-                0 0 120px rgba(255, 184, 0, 0.15);
-            animation: introFadeOut 2.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            will-change: transform, opacity;
-            position: relative;
-        }
-        @keyframes introFadeOut {
-            0% {
-                transform: perspective(800px) rotateY(0deg) scale(0.3);
-                opacity: 0;
-            }
-            15% {
-                transform: perspective(800px) rotateY(180deg) scale(1.05);
-                opacity: 1;
-            }
-            40% {
-                transform: perspective(800px) rotateY(360deg) scale(1.1);
-                opacity: 1;
-            }
-            65% {
-                transform: perspective(800px) rotateY(360deg) scale(0.9);
-                opacity: 0.85;
-            }
-            100% {
-                transform: perspective(800px) rotateY(360deg) scale(0.2);
-                opacity: 0;
-            }
-        }
-
-        /* ========== 减少动画偏好 ========== */
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-            .social-card,
-            .profile-section,
-            .cards-grid,
-            .footer,
-            .status-badge {
-                animation: none !important;
-                opacity: 1 !important;
-                transform: none !important;
-            }
-            #intro-overlay {
-                display: none !important;
-            }
-        }
-
-        /* ========== 自定义滚动条 ========== */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 200, 0, 0.2);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 200, 0, 0.4);
-        }
-
-        /* ========== 工具提示 ========== */
-        .card-tooltip {
-            position: absolute;
-            bottom: -32px;
-            left: 50%;
-            transform: translateX(-50%) scale(0.8);
-            background: rgba(20, 15, 5, 0.92);
-            color: var(--text-primary);
-            font-size: 0.7rem;
-            padding: 4px 12px;
-            border-radius: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.35s var(--transition-smooth);
-            white-space: nowrap;
-            letter-spacing: 0.5px;
-            z-index: 20;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 200, 0, 0.2);
-        }
-        .social-card:hover .card-tooltip {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
-            bottom: -38px;
-        }
-    </style>
+/* ============ 无障碍 & 滚动条 ============ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .social-card, .profile-section, .cards-grid, .footer, .status-badge {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    #intro-overlay { display: none !important; }
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: rgba(255,200,0,0.2); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,200,0,0.4); }
+</style>
 </head>
 <body>
 
-    <!-- 开场动画覆盖层 -->
-    <div id="intro-overlay">
-        <img src="xt.png" alt="吊炸天开场动画" class="intro-image" id="introImage">
-    </div>
+<!-- 开场动画 -->
+<div id="intro-overlay">
+    <img src="xt.webp" alt="开场动画" class="intro-image" id="introImage">
+</div>
 
-    <!-- 背景光斑 -->
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-    <div class="bg-orb orb-3"></div>
-    <div class="bg-orb orb-4"></div>
+<!-- 背景装饰 -->
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+<div class="bg-orb orb-3"></div>
+<div class="bg-orb orb-4"></div>
+<div class="grid-overlay"></div>
+<canvas id="particle-canvas"></canvas>
 
-    <!-- 网格叠加 -->
-    <div class="grid-overlay"></div>
-
-    <!-- 粒子背景 -->
-    <canvas id="particle-canvas"></canvas>
-
-    <!-- 主内容 -->
-    <div class="main-container">
-        <!-- 头像区域 -->
-        <div class="profile-section">
-	    <div class="avatar-wrapper" id="avatarWrapper">
-                <div class="avatar-pulse"></div>
-                <div class="avatar-ring"></div>
-                <div class="avatar-img" id="avatarImg">
-                    <img src="xt.png" alt="头像" class="avatar-photo" id="avatarPhoto"
-                    onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'fa-solid fa-user-astronaut\' style=\'font-size:44px;\'></i>'">
-                </div>
-            </div>
-	    <h1 class="profile-name">星宇晓天</h1>
-	    <p class="profile-name-sub" style="font-size:1.1rem; font-weight:600; background: linear-gradient(135deg, #ffe8b0, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Xioten Stellar</p>
-
-            <p class="profile-bio" id="typingBio">⭐点击下方卡片扩列⭐<span class="cursor"></span></p>
-            <div class="status-badge">
-                <span class="status-dot"></span>
-                在线 · 欢迎来玩
+<!-- 主内容 -->
+<div class="main-container">
+    <div class="profile-section">
+        <div class="avatar-wrapper" id="avatarWrapper">
+            <div class="avatar-pulse"></div>
+            <div class="avatar-ring"></div>
+            <div class="avatar-img">
+                <img src="xt.webp" alt="头像" class="avatar-photo" id="avatarPhoto"
+                     onerror="this.style.display='none';this.parentElement.innerHTML='<i class=&quot;fa-solid fa-user-astronaut&quot; style=&quot;font-size:44px;&quot;></i>'">
             </div>
         </div>
+        <h1 class="profile-name">星宇晓天</h1>
+        <p class="profile-name-sub">Xioten Stellar</p>
+        <p class="profile-bio" id="typingBio">⭐点击下方卡片扩列⭐<span class="cursor"></span></p>
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            狸想在线 · 欢迎来玩
+        </div>
+    </div>
 
-        <!-- 社交卡片网格 -->
-        <div class="cards-grid" id="cardsGrid">
-            <!-- QQ -->
-            <a href="https://qm.qq.com/q/zzciBEIApy" target="_blank" rel="noopener noreferrer"
-            class="social-card card-qq"
-            data-tilt
-            aria-label="我的QQ">
+    <div class="cards-grid" id="cardsGrid">
+        <!-- QQ -->
+        <a href="https://qm.qq.com/q/zzciBEIApy" target="_blank" rel="noopener noreferrer"
+           class="social-card card-qq" data-tilt aria-label="我的QQ">
             <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-            <div class="card-icon-wrapper">
-                <i class="fa-brands fa-qq"></i>
-            </div>
+            <div class="card-icon-wrapper"><i class="fa-brands fa-qq"></i></div>
             <span class="card-label">QQ</span>
             <span class="card-username">@星宇晓天XiotenStellar</span>
-            <span class="card-tooltip">点击QQ扩列</span>
+            <span class="card-tooltip">点击直接加我QQ</span>
         </a>
 
         <!-- Bilibili -->
-        <a href="https://space.bilibili.com/3493082110625973?spm_id_from=333.1007.0.0" target="_blank" rel="noopener noreferrer"
-        class="social-card card-bilibili"
-        data-tilt
-        aria-label="我的B站">
-        <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-        <div class="card-icon-wrapper">
-            <i class="fa-brands fa-bilibili"></i>
-        </div>
-        <span class="card-label">Bilibili</span>
-        <span class="card-username">@晓天是只工具狼</span>
-        <span class="card-tooltip">点击视奸B站</span>
-    </a>
+        <a href="intent://space/3493082110625973#Intent;scheme=bilibili;package=tv.danmaku.bili;S.browser_fallback_url=https%3A%2F%2Fspace.bilibili.com%2F3493082110625973;end"
+           class="social-card card-bilibili" data-tilt aria-label="我的B站">
+            <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            <div class="card-icon-wrapper"><i class="fa-brands fa-bilibili"></i></div>
+            <span class="card-label">Bilibili</span>
+            <span class="card-username">@晓天是只工具狼</span>
+            <span class="card-tooltip">点击打开B站App</span>
+        </a>
 
-    <!-- X (Twitter) -->
-    <a href="https://x.com/XiotenStellar" target="_blank" rel="noopener noreferrer"
-    class="social-card card-x"
-    data-tilt
-    aria-label="我的推特">
-    <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-    <div class="card-icon-wrapper">
-        <i class="fa-brands fa-x-twitter"></i>
+        <!-- X -->
+        <a href="intent://user?screen_name=XiotenStellar#Intent;scheme=twitter;package=com.twitter.android;S.browser_fallback_url=https%3A%2F%2Fx.com%2FXiotenStellar;end"
+           class="social-card card-x" data-tilt aria-label="我的推特">
+            <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            <div class="card-icon-wrapper"><i class="fa-brands fa-x-twitter"></i></div>
+            <span class="card-label">X</span>
+            <span class="card-username">@Xioten Stellar</span>
+            <span class="card-tooltip">点击打开X App</span>
+        </a>
+
+        <!-- Github（官方 App 不支持深链主页，保持网页） -->
+        <a href="https://github.com/XiotenStellar67" target="_blank" rel="noopener noreferrer"
+           class="social-card card-github" data-tilt aria-label="我的Github">
+            <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            <div class="card-icon-wrapper"><i class="fa-brands fa-github"></i></div>
+            <span class="card-label">Github</span>
+            <span class="card-username">@XiotenStellar67</span>
+            <span class="card-tooltip">点击访问GitHub</span>
+        </a>
+
+        <!-- Discord（缺数字 ID，保持网页） -->
+        <a href="https://discord.com/users/xiotenstellar" target="_blank" rel="noopener noreferrer"
+           class="social-card card-discord" data-tilt aria-label="我的Discord">
+            <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            <div class="card-icon-wrapper"><i class="fa-brands fa-discord"></i></div>
+            <span class="card-label">Discord</span>
+            <span class="card-username">@XiotenStellar</span>
+            <span class="card-tooltip">点击访问Discord</span>
+        </a>
+
+        <!-- 次元箱 -->
+        <a href="intent://www.ciyuanxiang.com/profile/4d958ce6-f545-43d7-a8bc-91d2b55b57cb#Intent;scheme=https;package=com.whitepixel.cyx;S.browser_fallback_url=https%3A%2F%2Fwww.ciyuanxiang.com%2Fprofile%2F4d958ce6-f545-43d7-a8bc-91d2b55b57cb;end"
+           class="social-card card-cybox" data-tilt aria-label="我的次元箱">
+            <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            <div class="card-icon-wrapper"><i class="fa-solid fa-box-open"></i></div>
+            <span class="card-label">次元箱</span>
+            <span class="card-username">@星宇晓天</span>
+            <span class="card-tooltip">点击打开次元箱App</span>
+        </a>
     </div>
-    <span class="card-label">X</span>
-    <span class="card-username">@Xioten Stellar</span>
-    <span class="card-tooltip">点击访问X</span>
-</a>
 
-<!-- Github -->
-<a href="https://github.com/XiotenStellar67" target="_blank" rel="noopener noreferrer"
-class="social-card card-github"
-data-tilt
-aria-label="我的Github">
-<span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-<div class="card-icon-wrapper">
-    <i class="fa-brands fa-github"></i>
-</div>
-<span class="card-label">Github</span>
-<span class="card-username">@XiotenStellar67</span>
-<span class="card-tooltip">点击访问GitHub</span>
-</a>
-
-<!-- Discord -->
-<a href="https://discord.com/users/xiotenstellar" target="_blank" rel="noopener noreferrer"
-class="social-card card-discord"
-data-tilt
-aria-label="我的Discord">
-<span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-<div class="card-icon-wrapper">
-    <i class="fa-brands fa-discord"></i>
-</div>
-<span class="card-label">Discord</span>
-<span class="card-username">@XiotenStellar</span>
-<span class="card-tooltip">点击访问Discord</span>
-</a>
-
-<!-- 次元箱 -->
-<a href="https://www.ciyuanxiang.com/profile/4d958ce6-f545-43d7-a8bc-91d2b55b57cb" target="_blank" rel="noopener noreferrer"
-class="social-card card-cybox"
-data-tilt
-aria-label="我的次元箱">
-<span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-<div class="card-icon-wrapper">
-    <i class="fa-solid fa-box-open"></i>
-</div>
-<span class="card-label">次元箱</span>
-<span class="card-username">@星宇晓天</span>
-<span class="card-tooltip">点击访问次元箱</span>
-</a>
-</div>
-
-<!-- 底部 -->
-<div class="footer">
-    <span>✦ 感谢扩列 · 期待与你贴贴 ✦</span>
-    <br>
-    <span style="font-size:0.65rem;opacity:0.6;">刚搓好的网页累死我了 · 2026</span>
-</div>
+    <div class="footer">
+        <span>✦ 感谢扩列 · 期待与你贴贴 ✦</span><br>
+        <span style="font-size:0.65rem;opacity:0.6;">刚搓好的网页累死我了</span><br>
+        <span style="font-size:0.65rem;opacity:0.6;">跳转优化：🐋 鲸鱼大小姐（尾鳍拍的键盘，不肥）</span>
+    </div>
 </div>
 
 <script>
-    (function() {
-        'use strict';
+(function () {
+    'use strict';
 
-        // ========== 粒子背景动画 ==========
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let animationId = null;
-        const mouse = { x: -1000, y: -1000 };
-        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        function resizeCanvas() {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
-            canvas.style.width = window.innerWidth + 'px';
-            canvas.style.height = window.innerHeight + 'px';
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            initParticles();
+    /* ============ 粒子背景 ============ */
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animId = null;
+    const mouse = { x: -1000, y: -1000 };
+
+    function resizeCanvas() {
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = innerWidth * dpr;
+        canvas.height = innerHeight * dpr;
+        canvas.style.width = innerWidth + 'px';
+        canvas.style.height = innerHeight + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        initParticles();
+    }
+
+    function initParticles() {
+        const count = Math.min(Math.floor(innerWidth * innerHeight / 18000), 90);
+        particles = Array.from({ length: count }, () => ({
+            x: Math.random() * innerWidth,
+            y: Math.random() * innerHeight,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            radius: Math.random() * 2.2 + 0.8,
+            baseAlpha: Math.random() * 0.5 + 0.3,
+            pulseSpeed: Math.random() * 0.02 + 0.005,
+            pulseOffset: Math.random() * Math.PI * 2
+        }));
+    }
+
+    function drawParticles(time) {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        const connectDist = 130;
+        const mouseDist = 180;
+
+        for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < -10) p.x = innerWidth + 10;
+            if (p.x > innerWidth + 10) p.x = -10;
+            if (p.y < -10) p.y = innerHeight + 10;
+            if (p.y > innerHeight + 10) p.y = -10;
+
+            const alpha = p.baseAlpha * (Math.sin(time * p.pulseSpeed + p.pulseOffset) * 0.15 + 0.85);
+
+            const dxm = p.x - mouse.x, dym = p.y - mouse.y;
+            const distM = Math.hypot(dxm, dym);
+            if (distM < mouseDist && distM > 0.01) {
+                const force = (mouseDist - distM) / mouseDist * 0.6;
+                p.x += (dxm / distM) * force;
+                p.y += (dym / distM) * force;
+            }
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,200,80,${alpha})`;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius * 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,180,0,${alpha * 0.2})`;
+            ctx.fill();
         }
 
-        function initParticles() {
-            const count = Math.min(Math.floor(window.innerWidth * window.innerHeight / 18000), 100);
-            particles = [];
-            for (let i = 0; i < count; i++) {
-                particles.push({
-                    x: Math.random() * window.innerWidth,
-                    y: Math.random() * window.innerHeight,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    radius: Math.random() * 2.2 + 0.8,
-                    baseAlpha: Math.random() * 0.5 + 0.3,
-                    pulseSpeed: Math.random() * 0.02 + 0.005,
-                    pulseOffset: Math.random() * Math.PI * 2,
-                });
-            }
-        }
-
-        function drawParticles(time) {
-            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-            const connectionDist = 130;
-            const mouseDist = 180;
-
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-
-                if (p.x < -10) p.x = window.innerWidth + 10;
-                if (p.x > window.innerWidth + 10) p.x = -10;
-                if (p.y < -10) p.y = window.innerHeight + 10;
-                if (p.y > window.innerHeight + 10) p.y = -10;
-
-                const pulse = Math.sin(time * p.pulseSpeed + p.pulseOffset) * 0.15 + 0.85;
-                const alpha = p.baseAlpha * pulse;
-
-                const dxm = p.x - mouse.x;
-                const dym = p.y - mouse.y;
-                const distM = Math.sqrt(dxm * dxm + dym * dym);
-                if (distM < mouseDist && distM > 0.01) {
-                    const force = (mouseDist - distM) / mouseDist * 0.6;
-                    p.x += (dxm / distM) * force;
-                    p.y += (dym / distM) * force;
-                }
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 200, 80, ${alpha})`;
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius * 2.5, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 180, 0, ${alpha * 0.2})`;
-                ctx.fill();
-            }
-
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < connectionDist) {
-                        const lineAlpha = (1 - dist / connectionDist) * 0.2;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(255, 200, 80, ${lineAlpha})`;
-                        ctx.lineWidth = 0.8;
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            for (let i = 0; i < particles.length; i++) {
-                const dx = particles[i].x - mouse.x;
-                const dy = particles[i].y - mouse.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < mouseDist) {
-                    const lineAlpha = (1 - dist / mouseDist) * 0.35;
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.hypot(dx, dy);
+                if (dist < connectDist) {
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    ctx.strokeStyle = `rgba(255, 210, 100, ${lineAlpha})`;
-                    ctx.lineWidth = 0.6;
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(255,200,80,${(1 - dist / connectDist) * 0.2})`;
+                    ctx.lineWidth = 0.8;
                     ctx.stroke();
                 }
             }
-
-            if (!isReducedMotion) {
-                animationId = requestAnimationFrame(drawParticles);
-            } else {
-                animationId = requestAnimationFrame(drawParticlesStatic);
-            }
         }
 
-        function drawParticlesStatic() {
-            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            for (const p of particles) {
+        for (const p of particles) {
+            const dist = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+            if (dist < mouseDist) {
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 200, 80, ${p.baseAlpha * 0.6})`;
-                ctx.fill();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.strokeStyle = `rgba(255,210,100,${(1 - dist / mouseDist) * 0.35})`;
+                ctx.lineWidth = 0.6;
+                ctx.stroke();
             }
-            animationId = requestAnimationFrame(drawParticlesStatic);
         }
 
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        });
-        window.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) {
-                mouse.x = e.touches[0].clientX;
-                mouse.y = e.touches[0].clientY;
-            }
-        }, { passive: true });
-        window.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 0) {
-                mouse.x = e.touches[0].clientX;
-                mouse.y = e.touches[0].clientY;
-            }
-        }, { passive: true });
-        window.addEventListener('mouseleave', () => {
-            mouse.x = -1000;
-            mouse.y = -1000;
-        });
-
-        // ========== 3D倾斜效果 ==========
-        function initTilt() {
-            const cards = document.querySelectorAll('[data-tilt]');
-            cards.forEach((card) => {
-                let rafId = null;
-                card.addEventListener('mousemove', (e) => {
-                    if (isReducedMotion) return;
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -6;
-                    const rotateY = ((x - centerX) / centerX) * 8;
-
-                    card.style.setProperty('--mouse-x', ((x / rect.width) * 100) + '%');
-                    card.style.setProperty('--mouse-y', ((y / rect.height) * 100) + '%');
-
-                    if (rafId) cancelAnimationFrame(rafId);
-                    rafId = requestAnimationFrame(() => {
-                        const scale = 1.04;
-                        card.style.transform =
-                            `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px) scale(${scale})`;
-                    });
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    if (rafId) cancelAnimationFrame(rafId);
-                    rafId = requestAnimationFrame(() => {
-                        card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
-                        card.style.setProperty('--mouse-x', '50%');
-                        card.style.setProperty('--mouse-y', '50%');
-                    });
-                });
-
-                card.addEventListener('touchmove', (e) => {
-                    if (isReducedMotion || e.touches.length !== 1) return;
-                    const rect = card.getBoundingClientRect();
-                    const touch = e.touches[0];
-                    const x = touch.clientX - rect.left;
-                    const y = touch.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -4;
-                    const rotateY = ((x - centerX) / centerX) * 6;
-
-                    card.style.setProperty('--mouse-x', ((x / rect.width) * 100) + '%');
-                    card.style.setProperty('--mouse-y', ((y / rect.height) * 100) + '%');
-                    card.style.transform =
-                        `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px) scale(1.02)`;
-                }, { passive: true });
-
-                card.addEventListener('touchend', () => {
-                    card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
-                });
-            });
-        }
-
-        // ========== 点击涟漪效果 ==========
-        function initRipple() {
-            const cards = document.querySelectorAll('.social-card');
-            cards.forEach((card) => {
-                card.addEventListener('click', function(e) {
-                    const rect = this.getBoundingClientRect();
-                    const ripple = document.createElement('span');
-                    ripple.classList.add('ripple');
-                    const size = Math.max(rect.width, rect.height) * 0.5;
-                    ripple.style.width = ripple.style.height = size + 'px';
-                    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-                    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-                    this.appendChild(ripple);
-                    setTimeout(() => ripple.remove(), 700);
-                });
-            });
-        }
-
-        // ========== 打字机效果 ==========
-        function initTypingEffect() {
-            const bioEl = document.getElementById('typingBio');
-            if (!bioEl) return;
-            const texts = [
-                '✨点击下方卡片扩列✨',
-                '✨欢迎来到我的主页✨',
-                '✨别看了快加我啊✨',
-                '✨这样我就能骚扰你们了✨',
-                '✨嘻嘻✨',
-            ];
-            if (isReducedMotion) {
-                bioEl.textContent = texts[0];
-                return;
-            }
-
-            let textIndex = 0;
-            let charIndex = 0;
-            let isDeleting = false;
-            const typeSpeed = 60;
-            const deleteSpeed = 35;
-            const pauseDuration = 2500;
-
-            function typeLoop() {
-                const currentText = texts[textIndex];
-                if (isDeleting) {
-                    charIndex--;
-                    bioEl.textContent = currentText.substring(0, charIndex) + '';
-                } else {
-                    charIndex++;
-                    bioEl.textContent = currentText.substring(0, charIndex) + '';
-                }
-
-                let delay = isDeleting ? deleteSpeed : typeSpeed;
-
-                if (!isDeleting && charIndex === currentText.length) {
-                    delay = pauseDuration;
-                    isDeleting = true;
-                } else if (isDeleting && charIndex === 0) {
-                    isDeleting = false;
-                    textIndex = (textIndex + 1) % texts.length;
-                    delay = 300;
-                }
-
-                setTimeout(typeLoop, delay);
-            }
-            setTimeout(typeLoop, 2300);
-        }
-
-        // ========== 开场动画控制 ==========
-        function initIntroOverlay() {
-            const overlay = document.getElementById('intro-overlay');
-            const introImage = document.getElementById('introImage');
-
-            if (!overlay || !introImage) return;
-
-            if (isReducedMotion) {
-                overlay.style.display = 'none';
-                return;
-            }
-
-            introImage.addEventListener('animationend', (e) => {
-                if (e.animationName === 'introFadeOut') {
-                    overlay.classList.add('hidden');
-                    setTimeout(() => {
-                        overlay.remove();
-                    }, 500);
-                }
-            });
-
-            // 备用：3秒后强制隐藏
-            setTimeout(() => {
-                if (!overlay.classList.contains('hidden')) {
-                    overlay.classList.add('hidden');
-                    setTimeout(() => overlay.remove(), 500);
-                }
-            }, 3000);
-
-            introImage.addEventListener('error', () => {
-                overlay.classList.add('hidden');
-                setTimeout(() => overlay.remove(), 500);
-            });
-        }
-
-        // ========== 头像图片加载失败回退 ==========
-        function initAvatarFallback() {
-            const avatarPhoto = document.getElementById('avatarPhoto');
-            if (!avatarPhoto) return;
-            avatarPhoto.addEventListener('error', () => {
-                avatarPhoto.style.display = 'none';
-                const parent = avatarPhoto.parentElement;
-                if (parent) {
-                    parent.innerHTML = '<i class="fa-solid fa-user-astronaut" style="font-size:44px;"></i>';
-                }
-            });
-        }
-
-        // ========== 初始化 ==========
-function init() {
-    resizeCanvas();
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-    });
-
-    if (isReducedMotion) {
-        drawParticlesStatic();
-    } else {
-        drawParticles(performance.now());
+        animId = requestAnimationFrame(drawParticles);
     }
 
-    initTilt();
-    initRipple();
-    initTypingEffect();
-    initAvatarFallback();
-    initIntroOverlay();
-
-    // 头像点击提示
-    document.getElementById('avatarWrapper').addEventListener('click', function() {
-        alert('请勿大力拍打或滑动哟');
-    });
-}
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
+    function drawParticlesStatic() {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (const p of particles) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,200,80,${p.baseAlpha * 0.6})`;
+            ctx.fill();
         }
+    }
 
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                if (animationId) cancelAnimationFrame(animationId);
-            } else {
-                if (isReducedMotion) {
-                    drawParticlesStatic();
-                } else {
-                    drawParticles(performance.now());
-                }
-            }
+    addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    addEventListener('touchmove', e => {
+        if (e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+    }, { passive: true });
+    addEventListener('touchstart', e => {
+        if (e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+    }, { passive: true });
+    addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+
+    /* ============ 3D 倾斜 ============ */
+    function initTilt() {
+        document.querySelectorAll('[data-tilt]').forEach(card => {
+            let rafId = null;
+            const reset = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => {
+                    card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+                    card.style.setProperty('--mouse-x', '50%');
+                    card.style.setProperty('--mouse-y', '50%');
+                });
+            };
+            card.addEventListener('mousemove', e => {
+                if (isReducedMotion) return;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left, y = e.clientY - rect.top;
+                const cx = rect.width / 2, cy = rect.height / 2;
+                const rx = ((y - cy) / cy) * -6;
+                const ry = ((x - cx) / cx) * 8;
+                card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
+                card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => {
+                    card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px) scale(1.04)`;
+                });
+            });
+            card.addEventListener('mouseleave', reset);
+            card.addEventListener('touchmove', e => {
+                if (isReducedMotion || e.touches.length !== 1) return;
+                const rect = card.getBoundingClientRect();
+                const t = e.touches[0];
+                const x = t.clientX - rect.left, y = t.clientY - rect.top;
+                const rx = ((y - rect.height / 2) / (rect.height / 2)) * -4;
+                const ry = ((x - rect.width / 2) / (rect.width / 2)) * 6;
+                card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
+                card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
+                card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px) scale(1.02)`;
+            }, { passive: true });
+            card.addEventListener('touchend', reset);
         });
-    })();
+    }
+
+    /* ============ 涟漪 ============ */
+    function initRipple() {
+        document.querySelectorAll('.social-card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height) * 0.5;
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 700);
+            });
+        });
+    }
+
+    /* ============ 打字机 ============ */
+    function initTyping() {
+        const bioEl = document.getElementById('typingBio');
+        if (!bioEl) return;
+        const texts = [
+            '✨点击下方卡片扩列✨',
+            '✨Wlcome to my web✨',
+            '✨别看了快加我啊✨',
+            '✨这样我就能骚扰你们了✨',
+            '✨嘻嘻✨'
+        ];
+        if (isReducedMotion) { bioEl.textContent = texts[0]; return; }
+
+        let ti = 0, ci = 0, deleting = false;
+        function loop() {
+            const cur = texts[ti];
+            ci += deleting ? -1 : 1;
+            bioEl.textContent = cur.substring(0, ci);
+            let delay = deleting ? 35 : 60;
+            if (!deleting && ci === cur.length) { delay = 2500; deleting = true; }
+            else if (deleting && ci === 0) { deleting = false; ti = (ti + 1) % texts.length; delay = 300; }
+            setTimeout(loop, delay);
+        }
+        setTimeout(loop, 2300);
+    }
+
+    /* ============ 头像回退 ============ */
+    function initAvatarFallback() {
+        const img = document.getElementById('avatarPhoto');
+        if (!img) return;
+        img.addEventListener('error', () => {
+            img.style.display = 'none';
+            const parent = img.parentElement;
+            if (parent) parent.innerHTML = '<i class="fa-solid fa-user-astronaut" style="font-size:44px;"></i>';
+        });
+    }
+
+    /* ============ 开场动画（预加载 + 超时兜底） ============ */
+    function initIntro() {
+        const overlay = document.getElementById('intro-overlay');
+        const img = document.getElementById('introImage');
+        if (!overlay || !img) return;
+
+        if (isReducedMotion) { overlay.style.display = 'none'; return; }
+
+        let dismissed = false;
+        const dismiss = () => {
+            if (dismissed) return;
+            dismissed = true;
+            overlay.classList.add('hidden');
+            setTimeout(() => overlay.remove(), 500);
+        };
+
+        const preloader = new Image();
+        preloader.onload = () => {
+            if (img.src !== preloader.src) img.src = preloader.src;
+            requestAnimationFrame(() => img.classList.add('play'));
+        };
+        preloader.onerror = dismiss;
+        preloader.src = 'xt.webp';
+
+        setTimeout(dismiss, 2500);
+        img.addEventListener('animationend', e => {
+            if (e.animationName === 'introFadeOut') dismiss();
+        });
+    }
+
+    /* ============ 头像点击 ============ */
+    function initAvatarClick() {
+        const w = document.getElementById('avatarWrapper');
+        if (w) w.addEventListener('click', () => alert('请勿大力拍打或滑动哟'));
+    }
+
+    /* ============ 初始化 ============ */
+    function init() {
+        resizeCanvas();
+        addEventListener('resize', resizeCanvas);
+
+        if (!isReducedMotion) animId = requestAnimationFrame(drawParticles);
+        else drawParticlesStatic();
+
+        initTilt();
+        initRipple();
+        initTyping();
+        initAvatarFallback();
+        initIntro();
+        initAvatarClick();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (animId) cancelAnimationFrame(animId);
+            animId = null;
+        } else if (!isReducedMotion) {
+            animId = requestAnimationFrame(drawParticles);
+        }
+    });
+})();
 </script>
 </body>
 </html>
